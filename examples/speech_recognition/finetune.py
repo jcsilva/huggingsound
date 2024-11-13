@@ -2,7 +2,7 @@ import torch
 from huggingsound import TrainingArguments, ModelArguments, SpeechRecognitionModel, TokenSet
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model = SpeechRecognitionModel("facebook/wav2vec2-large-xlsr-53", device=device)
+model = SpeechRecognitionModel("facebook/w2v-bert-2.0", device=device)
 output_dir = "my/finetuned/model/output/dir"
 
 # first of all, you need to define your model's token set

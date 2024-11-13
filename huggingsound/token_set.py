@@ -4,7 +4,7 @@ import os
 import json
 import logging
 from typing import Optional
-from transformers import Wav2Vec2Processor, AutoConfig, AutoTokenizer, AutoFeatureExtractor
+from transformers import Wav2Vec2Processor,Wav2Vec2BertProcessor, ProcessorMixin, AutoConfig, AutoTokenizer, AutoFeatureExtractor
 
 class TokenSet():
     """
@@ -138,10 +138,15 @@ class TokenSet():
 
             feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path)
 
-            return Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+            if config.model_type == 'wav2vec2-bert':
+                return Wav2Vec2BertProcessor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+            elif config.model_type == 'wav2vec2':
+                return Wav2Vec2Processor(feature_extractor=feature_extractor, tokenizer=tokenizer)
+            else:
+                raise ValueError(f"Config model type [{config.model_type}] is not currently supported")
 
     @classmethod
-    def from_processor(cls, processor: Wav2Vec2Processor, letter_case: str = "lowercase"):
+    def from_processor(cls, processor: ProcessorMixin, letter_case: str = "lowercase"):
 
         blank_token = processor.tokenizer.pad_token
         silence_token = processor.tokenizer.word_delimiter_token
